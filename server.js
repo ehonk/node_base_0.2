@@ -20,6 +20,24 @@
 mongoose.connect(database.url); 
 //mongoose.connect('mongodb://node:node@mongo.onmodulus.net:27017/uwO3mypu');     // connect to mongoDB database on modulus.io
 
+var Schema = mongoose.Schema;
+
+var logSchema = new Schema({
+  author: String,
+  module:   String,
+  comments: [{ body: String, date: Date }],
+  date: { type: Date, default: Date.now },
+  hidden: Boolean
+});
+var Log = mongoose.model('Log', logSchema);
+var logline = new Log({ author: 'nodejs', module: 'server.js' });
+
+logline.save(function (err, logline) {
+  if (err) return console.error(err);
+  console.log ('mongoose saved');
+});
+
+
 app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
 app.use(morgan('dev'));                                         // log every request to the console
 app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
